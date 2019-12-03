@@ -50,13 +50,18 @@ life <- function(state, ..., generation = 0, gen_max  = 100, time = 1) {
   image(state, ...)
   Sys.sleep(time)
   if ( generation < gen_max )
-    sys.function()(state, ..., generation = generation)
+    sys.function()(
+      state,
+      ...,
+      generation = generation,
+      gen_max = gen_max,
+      time = time)
 }
 
 X11(title = "Conway's Game of Life")
 par(mai = rep(0, 4))
 life(
-  state_init(100, 100, 50),
+  state_init(100, 100, 10),
   col = c("#FFFFFF", "#000000"),
   axes = FALSE
 )
