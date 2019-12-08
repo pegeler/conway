@@ -1,15 +1,5 @@
 #!/usr/bin/env Rscript
 # Conway's Game of Life
-#
-# Rules
-# ------------------------------------------------------
-# 1. Any live cell with two or three neighbors survives.
-# 2. Any dead cell with three live neighbors becomes a live cell.
-# 3. All other live cells die in the next generation.
-#    Similarly, all other dead cells stay dead.
-#
-# Source: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-
 
 state_init <- function(r, c, p) {
   if ( p > 1 ) p <- p / 100
@@ -57,11 +47,3 @@ life <- function(state, ..., generation = 0, gen_max  = 100, time = 1) {
       gen_max = gen_max,
       time = time)
 }
-
-X11(title = "Conway's Game of Life")
-par(mai = rep(0, 4))
-life(
-  state_init(100, 100, 10),
-  col = c("#FFFFFF", "#000000"),
-  axes = FALSE
-)
