@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+source('life.r')
+
 life <- function(state, ..., generation = 0, gen_max  = 100) {
   generation <- generation + 1L
   state <- apply_rules(state, count_neighbors(state))
