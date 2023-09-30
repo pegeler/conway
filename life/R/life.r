@@ -42,7 +42,7 @@ life <- function(state, ..., gen_max = NULL, sleep = NULL) {
 }
 
 cycle_index <- function(len, n) {
-  ((seq(0, len - 1) - n) %% len) + 1
+  ((seq.int(0L, len - 1L) - n) %% len) + 1L
 }
 
 cycle_matrix <- function(x, n_r, n_c) {
@@ -51,7 +51,7 @@ cycle_matrix <- function(x, n_r, n_c) {
 }
 
 cycles <- expand.grid(r = -1:1, c = -1:1)
-cycles <- cycles[cycles$r != 0 | cycles$c != 0, ]
+cycles <- cycles[cycles$r != 0L | cycles$c != 0L, ]
 
 count_neighbors <- function(state) {
   dims <- dim(state)
@@ -61,5 +61,5 @@ count_neighbors <- function(state) {
 }
 
 apply_rules <- function(state, neighbors) {
-  state & neighbors == 2 | neighbors == 3
+  state & neighbors == 2L | neighbors == 3L
 }
