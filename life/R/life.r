@@ -28,17 +28,39 @@ state_init <- function(r, c, p) {
 #'   run indefinitely.
 #' @param sleep The sleep interval between generations, in seconds. Or `NULL`
 #'   for no sleep interval.
+#' @param recursive A logical requesting the use of the recursive algorithm,
+#'   where available.
 #' @export
-life <- function(state, ..., gen_max = NULL, sleep = NULL) {
-  generation <- 0L
-  while (is.null(gen_max) || generation < gen_max) {
-    # Traded in recursive solution for while loop to prevent recursion depth
-    # issues because R does not do tail call optimization.
-    image(state, ...)
-    state <- apply_rules(state, count_neighbors(state))
-    if (!is.null(gen_max)) generation <- generation + 1L
-    if (!is.null(sleep)) Sys.sleep(sleep)
-  }
+life <- function(state, ..., gen_max = NULL, sleep = NULL, recursive = TRUE) {
+  f <- if (recursive && exists("Tailcall", where = "package:base", mode = "function"))
+    function(state) {
+      loop <- function(state, generation = 0L) {
+        if (!is.null(gen_max) && generation > gen_max)
+          return(state)
+        image(state, ...)
+        if (!is.null(sleep)) Sys.sleep(sleep)
+        Tailcall(
+          loop,
+          apply_rules(state, count_neighbors(state)),
+          if(!is.null(gen_max)) generation + 1L else 0L
+        )
+      }
+      loop(state)
+    }
+  else
+    function(state) {
+      generation <- 0L
+      while (is.null(gen_max) || generation < gen_max) {
+        # Traded in recursive solution for while loop to prevent recursion depth
+        # issues because R does not do tail call optimization.
+        image(state, ...)
+        state <- apply_rules(state, count_neighbors(state))
+        if (!is.null(gen_max)) generation <- generation + 1L
+        if (!is.null(sleep)) Sys.sleep(sleep)
+      }
+      state
+    }
+  invisible(f(state))
 }
 
 cycle_index <- function(len, n) {
