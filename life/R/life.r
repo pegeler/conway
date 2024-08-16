@@ -73,13 +73,13 @@ cycle_matrix <- function(x, n_r, n_c) {
 }
 
 cycles <- expand.grid(r = -1:1, c = -1:1)
-cycles <- cycles[cycles$r != 0L | cycles$c != 0L, ]
+cycles <- cycles[!(cycles$r == 0L & cycles$c == 0L), ]
 
 count_neighbors <- function(state) {
-  dims <- dim(state)
-  apply(cycles, 1, \(r) cycle_matrix(state, r[1], r[2])) |>
+  cycles |>
+    apply(1, \(r) cycle_matrix(state, r[1], r[2])) |>
     rowSums() |>
-    matrix(dims[1], dims[2])
+    matrix(nrow(state), ncol(state))
 }
 
 apply_rules <- function(state, neighbors) {
