@@ -49,10 +49,10 @@ life <- function(state, ..., gen_max = NULL, sleep = NULL, recursive = TRUE) {
     }
   else
     function(state) {
+      # Fallback to while loop solution to prevent recursion depth issues
+      # because `Tailcall` was not introduced until R 4.4.0
       generation <- 0L
       while (is.null(gen_max) || generation < gen_max) {
-        # Traded in recursive solution for while loop to prevent recursion depth
-        # issues because R does not do tail call optimization.
         image(state, ...)
         state <- apply_rules(state, count_neighbors(state))
         if (!is.null(gen_max)) generation <- generation + 1L
@@ -72,8 +72,8 @@ cycle_matrix <- function(x, n_r, n_c) {
   x[cycle_index(dims[1], n_r), cycle_index(dims[2], n_c)]
 }
 
-cycles <- expand.grid(r = -1:1, c = -1:1)
-cycles <- cycles[!(cycles$r == 0L & cycles$c == 0L), ]
+cycles <- expand.grid(r = -1:1, c = -1:1) |>
+  subset(r != 0L | c != 0L)
 
 count_neighbors <- function(state) {
   cycles |>
